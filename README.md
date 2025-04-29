@@ -1,53 +1,112 @@
-# Manajemen Tugas
+# Sistem Rental Mobil
 
 ```mermaid
 erDiagram
-    users ||--o{ tugas : has
-    kategori ||--o{ tugas : has
-    prioritas ||--o{ tugas : has
-    tugas ||--|| lampiran : has
-    tugas ||--o{ log_aktifitas : has
+    USERS ||--o{ RENTALS : makes
+    USERS ||--o{ REVIEWS : writes
+    USERS ||--o{ NOTIFICATIONS : receives
 
-    users {
+    CARS ||--o{ RENTALS : is_rented_in
+    CARS ||--o{ REVIEWS : receives
+    CARS ||--o{ CAR_MAINTENANCES : has
+
+    CATEGORIES ||--o{ CARS : includes
+    BRANDS ||--o{ CARS : manufactures
+
+    RENTALS ||--o{ PAYMENTS : has
+    RENTALS ||--o{ NOTIFICATIONS : triggers
+
+    USERS {
         int id PK
-        varchar nama
-        varchar email
-        varchar password
+        string name
+        string email
+        string password
+        string phone
+        string role
+        datetime created_at
+        datetime updated_at
     }
 
-    kategori {
+    CATEGORIES {
         int id PK
-        varchar nama_kategori
+        string name
+        text description
+        datetime created_at
+        datetime updated_at
     }
 
-    prioritas {
+    BRANDS {
         int id PK
-        varchar nama_prioritas
+        string name
+        datetime created_at
+        datetime updated_at
     }
 
-    tugas {
+    CARS {
         int id PK
-        varchar judul
-        varchar deskripsi
-        date deadline
+        int category_id FK
+        int brand_id FK
+        string model
+        string license_plate
+        int year
+        decimal price_per_day
+        text description
         enum status
+        datetime created_at
+        datetime updated_at
+    }
+
+    RENTALS {
+        int id PK
         int user_id FK
-        int kategori_id FK
-        int prioritas_id FK
+        int car_id FK
+        date start_date
+        date end_date
+        decimal total_price
+        enum status
+        datetime created_at
+        datetime updated_at
     }
 
-    lampiran {
+    PAYMENTS {
         int id PK
-        varchar nama_file
-        varchar path_file
-        int tugas_id FK
+        int rental_id FK
+        string method
+        decimal amount
+        enum status
+        datetime paid_at
+        datetime created_at
+        datetime updated_at
     }
 
-    log_aktifitas {
+    REVIEWS {
         int id PK
-        int tugas_id FK
-        enum aksi
-        timestamp waktu
+        int user_id FK
+        int car_id FK
+        int rating
+        text comment
+        datetime created_at
+        datetime updated_at
     }
+
+    CAR_MAINTENANCES {
+        int id PK
+        int car_id FK
+        date maintenance_date
+        text description
+        decimal cost
+        datetime created_at
+        datetime updated_at
+    }
+
+    NOTIFICATIONS {
+        int id PK
+        int user_id FK
+        int rental_id FK
+        string message
+        boolean is_read
+        datetime created_at
+    }
+
 
 ```
